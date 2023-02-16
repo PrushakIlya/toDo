@@ -1,0 +1,27 @@
+services:
+  to_do_backend:
+    container_name: to_do_backend
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    volumes:
+      - ../to_do_backend:/var/www/to_do_backend
+  to_do_nginx:
+    container_name: to_do_nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ../to_do_backend:/var/www/to_do_backend:cached
+    ports:
+      - ${NGINX_PORT}:80
+  to_do_mysql:
+    container_name: to_do_mysql
+    image: mysql:8.0.31
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - ${MYSQL_PORT}:3306
+
